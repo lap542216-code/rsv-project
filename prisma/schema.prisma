@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model FoodItem {
+  id                String   @id @default(cuid())
+  name              String
+  price             Float    @default(0)
+  availableQuantity Int      @default(0)
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+
+  @@map("food_items")
+}
+
+model Order {
+  id            String    @id @default(cuid())
+  orderNumber   String    @unique
+  studentName   String
+  phoneNumber   String
+  department    String
+  items         String    @default("[]") // JSON string of items
+  totalAmount   Float     @default(0)
+  paymentMethod String    @default("COD") // COD | ONLINE
+  paymentStatus String    @default("PENDING") // PENDING | PAID
+  orderStatus   String    @default("PLACED") // PLACED | PREPARING | DELIVERED | CANCELLED
+  createdAt     DateTime  @default(now())
+  preparingAt   DateTime?
+  deliveredAt   DateTime?
+  cancelledAt   DateTime?
+
+  @@map("orders")
+}
+
+model ArchivedOrder {
+  id            String    @id @default(cuid())
+  orderNumber   String
+  studentName   String
+  phoneNumber   String
+  department    String
+  items         String    @default("[]")
+  totalAmount   Float     @default(0)
+  paymentMethod String    @default("COD")
+  paymentStatus String    @default("PENDING")
+  orderStatus   String    @default("PLACED")
+  createdAt     DateTime
+  preparingAt   DateTime?
+  deliveredAt   DateTime?
+  cancelledAt   DateTime?
+  archivedAt    DateTime  @default(now())
+
+  @@map("archived_orders")
+}
+
+model ShopSettings {
+  id                        String   @id @default(cuid())
+  isOpenOverride            Boolean?
+  openTime                  String   @default("08:00")
+  closeTime                 String   @default("22:00")
+  cancellationCutoffMinutes Int      @default(30)
+  resetCutoffTime           String   @default("23:30")
+  createdAt                 DateTime @default(now())
+
+  @@map("shop_settings")
+}
+
+model OwnerUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  @@map("owner_users")
+}
+
+model OrderCounter {
+  id      Int @id @default(1)
+  current Int @default(1000)
+
+  @@map("order_counter")
+}
