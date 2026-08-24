@@ -14,8 +14,8 @@ export function setSessionCookie(res: Response, payload: OwnerPayload): void {
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "12h" });
   res.cookie(COOKIE_NAME, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    secure: true,
+    sameSite: "none",
     maxAge: 12 * 60 * 60 * 1000, // 12 hours
     path: "/",
   });
